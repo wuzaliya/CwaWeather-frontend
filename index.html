@@ -24,7 +24,19 @@
         <p style="color: white; font-weight: bold; margin-top: 20px;">正在觀測雲的流動...</p>
     </div>
     <div class="status-bar">
-        <div class="location-pill">📍 雲林</div>
+        <!-- <div class="location-pill">📍 雲林縣</div> -->
+        <div class="location-pill">📍 <select name="cityName" id="selectCity" 
+            style="all: unset; font-weight: bold; cursor: pointer; color:blueviolet; ">
+            <option value="kaohsiung" >高雄市</option>
+            <option value="taipei">台北市</option>
+            <option value="taichung">台中市</option>
+            <option value="tainan">台南市</option>
+            <option value="chiayi">嘉義市</option>
+            <option value="yunlin" selected>雲林縣</option>
+            <option value="pingtung">屏東縣</option>
+            <option value="hualien">花蓮縣</option>
+            <option value="tainan">臺南市</option>
+        </select></div>
         <div id="updateTime" class="update-pill">更新中...</div>
     </div>
 
@@ -40,8 +52,31 @@
     </div>
 
     <script>
-        //const API_URL = "https://cwa-backend-api.zeabur.app/api/weather/kaohsiung";
-        const API_URL = "https://jiang-mission4.zeabur.app/api/weather/kaohsiung";
+        //const API_URL = "https://jiang-mission4.zeabur.app/api/weather/kaohsiung";
+        
+        let selectedCity = "雲林縣";
+        let API_URL = "https://jiang-mission4.zeabur.app/api/weather?city=" + selectedCity;
+        document.getElementById("selectCity").addEventListener("change", function() {
+            var cityMap = {
+                "kaohsiung" : "高雄市",
+                "taipei" : "臺北市",
+                "taichung" : "臺中市",
+                "tainan" : "臺南市",
+                "chiayi" : "嘉義市",
+                "yunlin" : "雲林縣",
+                "pingtung" : "屏東縣",
+                "hualien" : "花蓮縣",
+            };
+            selectedCity = cityMap[this.value];
+        //    alert("你選擇了 " + this.value+ selectedCity + "，即將重新載入天氣資料！");
+           console.log("Selected city:", selectedCity + this.value);
+
+           // 重新定義 API_URL 並重新抓取資料   
+           API_URL = "https://jiang-mission4.zeabur.app/api/weather?city=" + selectedCity;
+            fetchWeather();
+        });
+
+        
         function getWeatherIcon(weather) {
             if (!weather) return "🌤️";
             if (weather.includes("晴")) return "☀️";
@@ -159,6 +194,7 @@
 
                 // 2. 定義「抓取資料」的工作
                 const fetchPromise = fetch(API_URL).then(res => res.json());
+                console.log("Fetching data from API:", API_URL);
 
                 // 3. Promise.all 會等待「兩個都完成」才會往下走
                 // result 陣列裡，第一個是 delay 的結果(沒用到)，第二個是 api 的 json 資料
